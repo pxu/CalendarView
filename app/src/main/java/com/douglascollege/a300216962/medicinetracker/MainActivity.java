@@ -1,19 +1,19 @@
 package com.douglascollege.a300216962.medicinetracker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.henry.calendarview.DatePickerController;
 import com.henry.calendarview.DayPickerView;
 import com.henry.calendarview.SimpleMonthAdapter;
-import com.douglascollege.a300216962.medicinetracker.R;
 
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     DayPickerView dayPickerView;
     Context context;
@@ -26,11 +26,12 @@ public class MainActivity extends AppCompatActivity {
         dayPickerView = (DayPickerView) findViewById(R.id.dpv_calendar);
 
         DayPickerView.DataModel dataModel = new DayPickerView.DataModel();
-        dataModel.yearStart = Calendar.YEAR-1;
-        dataModel.monthStart = Calendar.MONTH-1;
-        dataModel.monthCount = 16;
+        Calendar today = Calendar.getInstance();
+        dataModel.yearStart = today.get(Calendar.YEAR);
+        dataModel.monthStart = today.get(Calendar.MONTH);
+        dataModel.monthCount = 12;
         dataModel.defTag = "";
-        dataModel.leastDaysNum = 2;
+        dataModel.leastDaysNum = 1;
         dataModel.mostDaysNum = 100;
 
 
@@ -42,7 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDateRangeSelected(List<SimpleMonthAdapter.CalendarDay> selectedDays) {
-                Toast.makeText(context, "onDateRangeSelected", Toast.LENGTH_SHORT).show();
+                for(SimpleMonthAdapter.CalendarDay day: selectedDays){
+                    System.out.println(" peng: " + day.toString());
+
+                }
+
             }
 
             @Override
