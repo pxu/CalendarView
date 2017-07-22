@@ -280,7 +280,7 @@ class SimpleMonthView extends View {
             boolean isToady = false;
             if (mHasToday && (mToday == day)) {
                 isToady = true;
-                canvas.drawText("今天", x, getTextYCenter(mDayTextPaint, y - DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
+                canvas.drawText(Constants.TODAY, x, getTextYCenter(mDayTextPaint, y - DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
             }
             // 已过去的日期
             boolean isPrevDay = false;
@@ -297,9 +297,9 @@ class SimpleMonthView extends View {
                 isBeginDay = true;
                 drawDayBg(canvas, x, y, mSelectedDayBgPaint);
                 mDayTextPaint.setColor(mSelectedDayTextColor);
-                canvas.drawText("入住", x, getTextYCenter(mDayTextPaint, y + DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
+                canvas.drawText(Constants.START_DAY_TAG, x, getTextYCenter(mDayTextPaint, y + DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
                 if(isToady) {
-                    canvas.drawText("今天", x, getTextYCenter(mDayTextPaint, y - DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
+                    canvas.drawText(Constants.TODAY, x, getTextYCenter(mDayTextPaint, y - DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
                 }
             }
 
@@ -309,7 +309,7 @@ class SimpleMonthView extends View {
                 isLastDay = true;
                 drawDayBg(canvas, x, y, mSelectedDayBgPaint);
                 mDayTextPaint.setColor(mSelectedDayTextColor);
-                canvas.drawText("退房", x, getTextYCenter(mDayTextPaint, y + DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
+                canvas.drawText(Constants.END_DAY_TAG, x, getTextYCenter(mDayTextPaint, y + DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
             }
 
             // 在入住和退房之间的日期
@@ -343,7 +343,7 @@ class SimpleMonthView extends View {
 //                            canvas.drawRoundRect(rectF, 10.0f, 10.0f, mBusyDayBgPaint);
                             mDayTextPaint.setColor(mBusyDaysTextColor);
                         }
-                        canvas.drawText("已租", x, getTextYCenter(mBusyDayBgPaint, y + DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
+                        canvas.drawText(Constants.BUSY_DAY_TAG, x, getTextYCenter(mBusyDayBgPaint, y + DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
                     }
                     canvas.drawText(String.format("%d", day), x, getTextYCenter(mTagTextPaint, y - DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
                 }
@@ -372,7 +372,7 @@ class SimpleMonthView extends View {
 //                            canvas.drawRoundRect(rectF, 10.0f, 10.0f, mBusyDayBgPaint);
                             mDayTextPaint.setColor(mInValidDaysTextColor);
                         }
-                        canvas.drawText("禁用", x, getTextYCenter(mInValidDayBgPaint, y + DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
+                        canvas.drawText(Constants.INVALID_DAY_TAG, x, getTextYCenter(mInValidDayBgPaint, y + DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
                     }
                     canvas.drawText(String.format("%d", day), x, getTextYCenter(mTagTextPaint, y - DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
                 }

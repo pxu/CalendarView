@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.henry.calendarviewsample.MainActivity">
+    tools:context="com.douglascollege.a300216962.medicinetracker.MainActivity">
 
     <com.henry.calendarview.DayPickerView
         android:id="@+id/dpv_calendar"

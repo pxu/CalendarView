@@ -79,13 +79,13 @@ public class DayPickerView extends RecyclerView {
      */
     public void setParameter(DataModel dataModel, DatePickerController mController) {
         if(dataModel == null) {
-            Log.e("crash", "请设置参数");
+            Log.e("crash", "please set parameter in the dataModel");
             return;
         }
         this.dataModel = dataModel;
         this.mController = mController;
         setUpAdapter();
-        // 跳转到入住日期所在的月份
+        // scroll to the month selected
         scrollToSelectedPosition(dataModel.selectedDays, dataModel.monthStart);
     }
 
@@ -97,20 +97,20 @@ public class DayPickerView extends RecyclerView {
     }
 
     public static class DataModel implements Serializable {
-        // TYPE_MULTI：多选，TYPE_RANGE：范围选，TYPE_ONLY_READ：只读
+        // TYPE_MULTI：multiple selection ，TYPE_RANGE：range selection ，TYPE_ONLY_READ：read only
 //        public enum TYPE {TYPE_MULTI, TYPE_RANGE, TYPE_ONLY_READ}
 
-        //        TYPE type;                                       // 类型
-        public int yearStart;                                      // 日历开始的年份
-        public int monthStart;                                     // 日历开始的月份
-        public int monthCount;                                     // 要显示几个月
-        public List<SimpleMonthAdapter.CalendarDay> invalidDays;   // 无效的日期
-        public List<SimpleMonthAdapter.CalendarDay> busyDays;      // 被占用的日期
-        public SimpleMonthAdapter.SelectedDays<SimpleMonthAdapter.CalendarDay> selectedDays;  // 默认选择的日期
-        public int leastDaysNum;                                   // 至少选择几天
-        public int mostDaysNum;                                    // 最多选择几天
-        public List<SimpleMonthAdapter.CalendarDay> tags;          // 日期下面对应的标签
-        public String defTag;                                      // 默认显示的标签
-//        public boolean displayTag;                               // 是否显示标签
+//        TYPE type;
+        public int yearStart;                                      // start year of the calendar
+        public int monthStart;                                     // start month of the calendar
+        public int monthCount;                                     // the count of month to display
+        public List<SimpleMonthAdapter.CalendarDay> invalidDays;
+        public List<SimpleMonthAdapter.CalendarDay> busyDays;
+        public SimpleMonthAdapter.SelectedDays<SimpleMonthAdapter.CalendarDay> selectedDays;  // default selected days
+        public int leastDaysNum;                                   // minimum days to select
+        public int mostDaysNum;                                    // maximum days to select
+        public List<SimpleMonthAdapter.CalendarDay> tags;          // tags in the days
+        public String defTag;                                      // default tag
+//        public boolean displayTag;                               // will display tag of not
     }
 }

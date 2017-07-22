@@ -21,20 +21,20 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     protected static final int MONTHS_IN_YEAR = 12;
     private final TypedArray typedArray;
     private final Context mContext;
-    private final DatePickerController mController;             // 回调
+    private final DatePickerController mController;             // call back method
     private Calendar calendar;
-    private SelectedDays<CalendarDay> rangeDays;                // 选择日期范围
+    private SelectedDays<CalendarDay> rangeDays;                // range of days selected
 
-    private List<CalendarDay> mBusyDays;                        // 被占用的日期
-    private List<CalendarDay> mTags;                            // 日期下面的标签
-    private String mDefTag;                                     // 默认标签
+    private List<CalendarDay> mBusyDays;                        //busy days
+    private List<CalendarDay> mTags;                            // tags in the days
+    private String mDefTag;                                     // default tag
 
-    private int mLeastDaysNum;                                  // 至少选择几天
-    private int mMostDaysNum;                                   // 至多选择几天
+    private int mLeastDaysNum;                                  // minimum days to select
+    private int mMostDaysNum;                                   // mamimum days to select
 
-    private List<CalendarDay> mInvalidDays;                     // 无效的日期
+    private List<CalendarDay> mInvalidDays;                     //
 
-    private CalendarDay mNearestDay;                            // 比离入住日期大且是最近的已被占用或者无效日期
+    private CalendarDay mNearestDay;                            // closest day which are busy or invalid
 
     private DayPickerView.DataModel dataModel;
 
@@ -88,8 +88,8 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         }
 
         if (dataModel.leastDaysNum > dataModel.mostDaysNum) {
-            Log.e("error", "可选择的最小天数不能小于最大天数");
-            throw new IllegalArgumentException("可选择的最小天数不能小于最大天数");
+            Log.e("error", "minium selected days should not greter than maxium selected days");
+            throw new IllegalArgumentException("minium selected days should not greter than maxium selected days");
         }
 
         if(dataModel.monthCount <= 0) {
@@ -97,7 +97,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         }
 
         if(dataModel.defTag == null) {
-            dataModel.defTag = "标签";
+            dataModel.defTag = Constants.DEFAULT_TAG;
         }
 
         mLeastDaysNum = dataModel.leastDaysNum;
@@ -120,8 +120,8 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         final SimpleMonthView v = viewHolder.simpleMonthView;
         final HashMap<String, Object> drawingParams = new HashMap<String, Object>();
-        int month;          // 月份
-        int year;           // 年份
+        int month;
+        int year;
 
         int monthStart = dataModel.monthStart;
         int yearStart = dataModel.yearStart;
@@ -187,25 +187,25 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
      * @param calendarDay
      */
     public void setRangeSelectedDay(CalendarDay calendarDay) {
-        // 选择退房日期
+        //
         if (rangeDays.getFirst() != null && rangeDays.getLast() == null) {
-            // 把比离入住日期大且是最近的已被占用或者无效日期找出来
+            // find the closest busy or invalid day
             mNearestDay = getNearestDay(rangeDays.getFirst());
-            // 所选日期范围内是否有被占用的日期
+            // check if the selected days are validate are busy or not
             if (isContainSpecialDays(rangeDays.getFirst(), calendarDay, mBusyDays)) {
                 if(mController != null) {
                     mController.alertSelectedFail(DatePickerController.FailEven.CONTAIN_NO_SELECTED);
                 }
                 return;
             }
-            // 所选日期范围内是否有无效的日期
+            // check if the selected days are validate are valid or not
             if (isContainSpecialDays(rangeDays.getFirst(), calendarDay, mInvalidDays)) {
                 if(mController != null) {
                     mController.alertSelectedFail(DatePickerController.FailEven.CONTAIN_INVALID);
                 }
                 return;
             }
-            // 所选退房日期不能再入住日期之前
+            // start date should be earlier than end date
             if (calendarDay.getDate().before(rangeDays.getFirst().getDate())) {
                 if(mController != null) {
                     mController.alertSelectedFail(DatePickerController.FailEven.END_MT_START);
@@ -214,14 +214,14 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
             }
 
             int dayDiff = dateDiff(rangeDays.getFirst(), calendarDay);
-            // 所选的日期范围不能小于最小限制
+            // selected days should be greater than min allowed days
             if (dayDiff > 1 && mLeastDaysNum > dayDiff) {
                 if(mController != null) {
                     mController.alertSelectedFail(DatePickerController.FailEven.NO_REACH_LEAST_DAYS);
                 }
                 return;
             }
-            // 所选日期范围不能大于最大限制
+            // selected days should be less than max allowed days
             if (dayDiff > 1 && mMostDaysNum < dayDiff) {
                 if(mController != null) {
                     mController.alertSelectedFail(DatePickerController.FailEven.NO_REACH_MOST_DAYS);
@@ -231,18 +231,18 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
             rangeDays.setLast(calendarDay);
 
-            // 把开始日期和结束日期中间的所有日期都加到list中
+            // add the range of dates into the list
             if(mController != null) {
                 mController.onDateRangeSelected(addSelectedDays());
             }
-        } else if (rangeDays.getLast() != null) {   // 重新选择入住日期
+        } else if (rangeDays.getLast() != null) {   // reselect days
             rangeDays.setFirst(calendarDay);
             rangeDays.setLast(null);
-            // 离该天最近的已定或者禁用日期找出来
+            /// find the closest busy or invalid day
             mNearestDay = getNearestDay(calendarDay);
-        } else {        // 第一次选择入住日期
+        } else {        // start day
             rangeDays.setFirst(calendarDay);
-            // 离该天最近的已定或者禁用日期找出来
+            /// find the closest busy or invalid day
             mNearestDay = getNearestDay(calendarDay);
         }
 
@@ -250,9 +250,9 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     }
 
     /**
-     * 把比离入住日期大且是最近的已被占用或者无效日期找出来
+     * /// find the closest busy or invalid day
      *
-     * @param calendarDay 入住日期
+     * @param calendarDay start day
      * @return
      */
     protected CalendarDay getNearestDay(CalendarDay calendarDay) {
@@ -273,7 +273,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     }
 
     /**
-     * 判断选择的日期范围是否包含有特殊的日期（无效的或者已被占用的日期）
+     * check if it contains busy or invalid dates
      *
      * @param first
      * @param last
@@ -292,7 +292,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     }
 
     /**
-     * 两个日期中间隔多少天
+     * different between tow days
      *
      * @param first
      * @param last
@@ -304,7 +304,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     }
 
     /**
-     * 范围选择时，把选中的所有日期加进list中
+     * add all the selected days in the list
      *
      * @return
      */
@@ -336,7 +336,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     }
 
     /**
-     * 设置数据集
+     * set DataModel
      *
      * @param dataModel
      */
@@ -428,7 +428,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         }
 
         /**
-         * 只比较年月日
+         * compare calendarDay
          *
          * @param calendarDay
          * @return
@@ -464,7 +464,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         }
 
         /**
-         * 大于比较的日期（只比较年月日）
+         * get how many days after current day
          *
          * @param o
          * @return
@@ -480,7 +480,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         }
 
         /**
-         * 小于比较的日期（只比较年月日）
+         * get how many days before current day
          *
          * @param o
          * @return

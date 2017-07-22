@@ -10,11 +10,11 @@ public interface DatePickerController {
     }
 //	public abstract int getMaxYear();
 
-    void onDayOfMonthSelected(SimpleMonthAdapter.CalendarDay calendarDay);          // 点击日期回调函数，月份记得加1
+    void onDayOfMonthSelected(SimpleMonthAdapter.CalendarDay calendarDay);          // callback method for day select, plus 1
 
-    void onDateRangeSelected(List<SimpleMonthAdapter.CalendarDay> selectedDays);    // 选择范围回调函数，月份记得加1
+    void onDateRangeSelected(List<SimpleMonthAdapter.CalendarDay> selectedDays);    // callback method for date range selection, remember plus 1
 
-//    void onDaysSelected(List<SimpleMonthAdapter.CalendarDay> seleDaysList);       // 多选回调函数，月份记得加1
+//    void onDaysSelected(List<SimpleMonthAdapter.CalendarDay> seleDaysList);       // callback method for multiple days select, plus 1 for the selection
 
     void alertSelectedFail(FailEven even);
 }
