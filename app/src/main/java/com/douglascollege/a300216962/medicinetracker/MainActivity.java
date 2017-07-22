@@ -2,12 +2,13 @@ package com.douglascollege.a300216962.medicinetracker;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 
-import com.henry.calendarview.DatePickerController;
-import com.henry.calendarview.DayPickerView;
 import com.henry.calendarview.SimpleMonthAdapter;
 
 import java.util.Calendar;
@@ -15,45 +16,63 @@ import java.util.List;
 
 public class MainActivity extends Activity {
 
-    DayPickerView dayPickerView;
-    Context context;
+
+    public static Context context;
+    EditText editTextMedicineDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
-        dayPickerView = (DayPickerView) findViewById(R.id.dpv_calendar);
+        editTextMedicineDates = (EditText)findViewById(R.id.editTextMedicineDates);
+        Button button = (Button) findViewById(R.id.buttonAddMedicine);
 
-        DayPickerView.DataModel dataModel = new DayPickerView.DataModel();
-        Calendar today = Calendar.getInstance();
-        dataModel.yearStart = today.get(Calendar.YEAR);
-        dataModel.monthStart = today.get(Calendar.MONTH);
-        dataModel.monthCount = 12;
-        dataModel.defTag = "";
-        dataModel.leastDaysNum = 1;
-        dataModel.mostDaysNum = 100;
-
-
-        dayPickerView.setParameter(dataModel, new DatePickerController() {
+        editTextMedicineDates.setFocusable(false);
+        editTextMedicineDates.setClickable(true);
+        editTextMedicineDates.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDayOfMonthSelected(SimpleMonthAdapter.CalendarDay calendarDay) {
-                Toast.makeText(context, "onDayOfMonthSelected", Toast.LENGTH_SHORT).show();
-            }
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DatePickerActivity.class);
 
-            @Override
-            public void onDateRangeSelected(List<SimpleMonthAdapter.CalendarDay> selectedDays) {
-                for(SimpleMonthAdapter.CalendarDay day: selectedDays){
-                    System.out.println(" peng: " + day.toString());
+                startActivityForResult(intent,1);
 
-                }
 
-            }
-
-            @Override
-            public void alertSelectedFail(FailEven even) {
-                Toast.makeText(context, "alertSelectedFail", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+        ListView listview = (ListView) findViewById(R.id.listviewMedicineTakingItem);
+        listview.setAdapter(new MainActivityAdapter(context, new String[] { "Medicine 1",
+                "Medicine 2" , "Medicine 2" }));
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1) {
+            Bundle b = data.getExtras();
+            List<SimpleMonthAdapter.CalendarDay> selectedDays = (List<SimpleMonthAdapter.CalendarDay>) b.get("selected_dates");
+            String medicineTakingDateRange = "";
+            if(selectedDays!=null && selectedDays.size()>0){
+                medicineTakingDateRange = CommonUtils.getDateInString(selectedDays.get(0).getDate());
+                medicineTakingDateRange += " - " +  CommonUtils.getDateInString(selectedDays.get(selectedDays.size()-1).getDate());
+
+            }
+
+            for (SimpleMonthAdapter.CalendarDay day : selectedDays) {
+                System.out.println(" pengfei: " + day.toString());
+
+            }
+
+            editTextMedicineDates.setText(medicineTakingDateRange);
+
+        }
+
+
+
     }
 }
