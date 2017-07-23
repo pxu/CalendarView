@@ -19,6 +19,7 @@
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/editTextMedicineName"
+            android:imeOptions="actionDone"
             android:hint="Medicine Name" />
 
         <EditText
@@ -27,7 +28,6 @@
             android:inputType="numberDecimal"
             android:ems="10"
             android:id="@+id/editTextMedicineQuantity"
-            android:layout_weight="1"
             android:hint="Quantity" />
 
         <EditText
@@ -43,16 +43,18 @@
             android:layout_height="wrap_content"
             android:id="@+id/buttonAddMedicine" />
 
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:id="@+id/listviewMedicineTakingItem" />
+
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/listviewMedicineTakingItem" />
     </ScrollView>
 
 </LinearLayout>

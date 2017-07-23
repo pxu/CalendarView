@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.henry.calendarview.SimpleMonthAdapter;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -40,13 +43,77 @@ public class MainActivity extends Activity {
 
             }
         });
+        final EditText editTextMedicineName = (EditText)findViewById(R.id.editTextMedicineName);
+        editTextMedicineName.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    hideSoftKeyBoard();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        final EditText editTextMedicineQuantity = (EditText)findViewById(R.id.editTextMedicineQuantity);
+        editTextMedicineQuantity.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    hideSoftKeyBoard();
+                    return true;
+                }
+                return false;
+            }
+        });
 
 
-        ListView listview = (ListView) findViewById(R.id.listviewMedicineTakingItem);
-        listview.setAdapter(new MainActivityAdapter(context, new String[] { "Medicine 1",
-                "Medicine 2" , "Medicine 2" }));
+        final List<MainActivityAdapterItem> data = new ArrayList<>();
+
+        /*data.add(new MainActivityAdapterItem("Aspinlin","1", "2017-07-18"));
+        data.add(new MainActivityAdapterItem("Aspinlin2","3", "2017-07-18"));
+        data.add(new MainActivityAdapterItem("Aspinlin3","3", "2017-07-18"));
+        data.add(new MainActivityAdapterItem("Aspinlin","1", "2017-07-18"));
+        data.add(new MainActivityAdapterItem("Aspinlin2","3", "2017-07-18"));
+        data.add(new MainActivityAdapterItem("Aspinlin3","3", "2017-07-18"));
+        data.add(new MainActivityAdapterItem("Aspinlin","1", "2017-07-18"));
+        data.add(new MainActivityAdapterItem("Aspinlin2","3", "2017-07-18"));
+        data.add(new MainActivityAdapterItem("Aspinlin3","3", "2017-07-18"));
+
+        data.add(new MainActivityAdapterItem("Aspinlin","1", "2017-07-18"));
+        data.add(new MainActivityAdapterItem("Aspinlin2","3", "2017-07-18"));
+        data.add(new MainActivityAdapterItem("Aspinlin3","3", "2017-07-18"));
+        */
+
+        final ListView listview = (ListView) findViewById(R.id.listviewMedicineTakingItem);
+        listview.setAdapter(new MainActivityAdapter(context, data));
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                data.add(new MainActivityAdapterItem(
+                        editTextMedicineName.getText().toString(),
+                        editTextMedicineQuantity.getText().toString(),
+                        editTextMedicineDates.getText().toString())
+                );
+                listview.invalidateViews();
+                hideSoftKeyBoard();
+
+            }
+        });
 
 
+
+    }
+
+    private void hideSoftKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
+        if(imm.isAcceptingText()) { // verify if the soft keyboard is open
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
     }
 
     @Override
