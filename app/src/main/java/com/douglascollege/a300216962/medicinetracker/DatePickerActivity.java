@@ -32,7 +32,7 @@ public class DatePickerActivity extends Activity {
         dataModel.monthCount = 12;
         dataModel.defTag = "";
         dataModel.leastDaysNum = 1;
-        dataModel.mostDaysNum = 100;
+        dataModel.mostDaysNum = 365;
 
 
         dayPickerView.setParameter(dataModel, new DatePickerController() {

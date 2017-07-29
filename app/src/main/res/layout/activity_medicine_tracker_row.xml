@@ -3,36 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:paddingBottom="15dp"
+    android:paddingTop="15dp">
 
     <ImageView
-        android:layout_width="74dp"
-        android:layout_height="83dp"
-        android:id="@+id/imageView"
-        android:background="@mipmap/medicine"
+        android:layout_width="60dp"
+        android:layout_height="63dp"
+        android:id="@+id/imageView_face"
+        android:background="@mipmap/sad_face"
         android:layout_marginRight="10dp" />
 
     <LinearLayout
         android:orientation="vertical"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:text="2017-03-12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkBoxMedicineTakingDate"
+                android:layout_weight="1"
+
+                android:textSize="36sp"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/holo_red_light"
+                />
+
+        </LinearLayout>
+
         <TextView
+            android:text="Sunday"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewMedicineName"
+            android:id="@+id/textView_Day"
             android:textSize="24sp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/textViewMedicineQuantity" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewStartDate" />
+
     </LinearLayout>
 
 </LinearLayout>
