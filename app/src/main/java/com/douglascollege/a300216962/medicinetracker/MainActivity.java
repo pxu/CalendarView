@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
 
 
     public static Context context;
@@ -58,18 +61,32 @@ public class MainActivity extends Activity {
         data.add(new MainActivityAdapterItem("Aspinlin3","3", "2017-07-18"));
 
 
-        final ListView listview = (ListView) findViewById(R.id.listviewMedicineTakingItem);
-        listview.setAdapter(new MainActivityAdapter(context, data));
-
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.listviewMedicineTakingItem);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final MainActivityAdapter mainActivityAdapter = new MainActivityAdapter(context, data);
+        recyclerView.setAdapter(mainActivityAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(context, MedicineTrackerActivity.class);
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
 
-                startActivityForResult(intent,2);
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                // Remove item from backing list here
+                data.remove(viewHolder.getAdapterPosition());
+                mainActivityAdapter.notifyDataSetChanged();
+                //mainActivityAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
             }
         });
+
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+
+
+
+
 
     }
 

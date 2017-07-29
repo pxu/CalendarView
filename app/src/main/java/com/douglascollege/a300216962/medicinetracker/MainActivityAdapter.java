@@ -1,10 +1,11 @@
 package com.douglascollege.a300216962.medicinetracker;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  */
 
 
-public class MainActivityAdapter extends BaseAdapter {
+public class MainActivityAdapter extends RecyclerView.Adapter {
 
     Context context;
     List<MainActivityAdapterItem> data;
@@ -29,42 +30,63 @@ public class MainActivityAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        // TODO Auto-generated method stub
-        return data.size();
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new MainActivityViewHolder(parent);
     }
 
     @Override
-    public Object getItem(int position) {
-        // TODO Auto-generated method stub
-        return data.get(position);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        MainActivityViewHolder viewHolder = (MainActivityViewHolder)holder;
+
+        MainActivityAdapterItem item = data.get(position);
+
+
+        viewHolder.textViewMedicineName.setText(item.getMedicineName());
+
+
+        viewHolder.textViewQuantity.setText(item.getMedicineQuantity() + " Dose/Day");
+
+
+        viewHolder.textViewStartDate.setText("start from: " + item.getStartDate());
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MedicineTrackerActivity.class);
+
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
-        return position;
+        return data.get(position).getMedicineId();
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
-        View vi = convertView;
-
-        if (vi == null)
-            vi = inflater.inflate(R.layout.activity_main_row, null);
-
-        MainActivityAdapterItem item = data.get(position);
-        TextView text = (TextView) vi.findViewById(R.id.textViewMedicineName);
-        text.setText(item.getMedicineName());
-
-        TextView textViewQuantity = (TextView) vi.findViewById(R.id.textViewMedicineQuantity);
-        textViewQuantity.setText(item.getMedicineQuantity() + " Dose/Day");
-
-        TextView textViewStartDate = (TextView) vi.findViewById(R.id.textViewStartDate);
-        textViewStartDate.setText("start from: " + item.getStartDate());
-
-
-        return vi;
+    public int getItemCount() {
+        return data.size();
     }
+
+    /**
+     * ViewHolder capable of presenting two states: "normal" and "undo" state.
+     */
+    static class MainActivityViewHolder extends RecyclerView.ViewHolder{
+
+        TextView textViewMedicineName;
+        TextView textViewQuantity;
+        TextView textViewStartDate;
+
+        public MainActivityViewHolder(ViewGroup parent) {
+            super(LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_main_row, parent, false));
+            textViewMedicineName = (TextView) itemView.findViewById(R.id.textViewMedicineName);
+            textViewQuantity = (TextView) itemView.findViewById(R.id.textViewMedicineQuantity);
+            textViewStartDate = (TextView) itemView.findViewById(R.id.textViewStartDate);
+        }
+
+
+    }
+
 }
