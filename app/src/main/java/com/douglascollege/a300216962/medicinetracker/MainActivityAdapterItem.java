@@ -5,6 +5,8 @@ package com.douglascollege.a300216962.medicinetracker;
  */
 
 public class MainActivityAdapterItem {
+
+    private Long medicineId;
     private String medicineName;
     private String medicineQuantity;
     private String startDate;
@@ -13,6 +15,14 @@ public class MainActivityAdapterItem {
         this.medicineName = medicineName;
         this.medicineQuantity = medicineQuantity;
         this.startDate = startDate;
+    }
+
+    public Long getMedicineId() {
+        return medicineId;
+    }
+
+    public void setMedicineId(Long medicineId) {
+        this.medicineId = medicineId;
     }
 
     public String getMedicineName() {
