@@ -9,9 +9,14 @@ import java.util.Date;
 
 public class CommonUtils {
     public static String getDateInString(Date date){
-        String pattern = "yyyy-MM-dd";
+        String pattern = "yyyy/MM/dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         return simpleDateFormat.format(date);
+    }
+
+    public static boolean isDateInBetween(Date currentDate, Date min, Date max){
+
+        return currentDate.compareTo(min) >= 0 && currentDate.compareTo(max) <= 0;
     }
 
 }

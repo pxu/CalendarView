@@ -25,7 +25,7 @@
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/editTextMedicineQuantity"
-        android:hint="Quantity" />
+        android:hint="Dose/Day" />
 
     <EditText
         android:layout_width="match_parent"

@@ -11,8 +11,11 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerItem;
+
 import java.util.List;
 
+import static com.douglascollege.a300216962.medicinetracker.MainActivity.medicineTrackerManager;
 import static com.douglascollege.a300216962.medicinetracker.R.mipmap.happy_face;
 import static com.douglascollege.a300216962.medicinetracker.R.mipmap.sad_face;
 
@@ -24,10 +27,10 @@ import static com.douglascollege.a300216962.medicinetracker.R.mipmap.sad_face;
 public class MedicineTrackerActivityAdapter extends BaseAdapter {
 
     Context context;
-    List<MedicineTrackerActivityAdapterItem> data;
+    List<MedicineTrackerItem> data;
     private static LayoutInflater inflater = null;
 
-    public MedicineTrackerActivityAdapter(Context context, List<MedicineTrackerActivityAdapterItem> data) {
+    public MedicineTrackerActivityAdapter(Context context, List<MedicineTrackerItem> data) {
         // TODO Auto-generated constructor stub
         this.context = context;
         this.data = data;
@@ -37,19 +40,16 @@ public class MedicineTrackerActivityAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return data.size();
     }
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         return data.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
@@ -61,20 +61,24 @@ public class MedicineTrackerActivityAdapter extends BaseAdapter {
         if (vi == null)
             vi = inflater.inflate(R.layout.activity_medicine_tracker_row, null);
 
-        final MedicineTrackerActivityAdapterItem item = data.get(position);
+        final MedicineTrackerItem item = data.get(position);
         final CheckBox checkBoxMedicineTakingDate = (CheckBox) vi.findViewById(R.id.checkBoxMedicineTakingDate);
         final ImageView face = (ImageView)vi.findViewById(R.id.imageView_face);
         updateView(item.isTaken(),face, checkBoxMedicineTakingDate);
 
-        checkBoxMedicineTakingDate.setText("" + item.getTakingDate());
+        checkBoxMedicineTakingDate.setText("" + CommonUtils.getDateInString(item.getDate()));
+
 
         checkBoxMedicineTakingDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                updateView(isChecked, face, checkBoxMedicineTakingDate);
+                updateView(isChecked, face, checkBoxMedicineTakingDate,item);
             }
         });
+
+        final TextView textView_Day = (TextView) vi.findViewById(R.id.textView_Day);
+        textView_Day.setText(item.getDay());
 
 
         return vi;
@@ -89,5 +93,11 @@ public class MedicineTrackerActivityAdapter extends BaseAdapter {
             face.setBackgroundResource(sad_face);
             checkBoxMedicineTakingDate.setTextColor(Color.RED);
         }
+    }
+
+    private void updateView(boolean isTaken, ImageView face, CheckBox checkBoxMedicineTakingDate, MedicineTrackerItem item){
+        item.setTaken(isTaken);
+        medicineTrackerManager.updateMedicineTrackerItem(item);
+        updateView(isTaken,face,checkBoxMedicineTakingDate);
     }
 }

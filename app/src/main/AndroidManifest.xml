@@ -17,7 +17,8 @@
         </activity>
         <activity android:name=".DatePickerActivity" />
         <activity android:name=".MedicineTrackerActivity" />
-        <activity android:name=".AddMedicineTrackerActivity"></activity>
+        <activity android:name=".AddMedicineTrackerActivity" />
+        <activity android:name=".ReportActivity"></activity>
     </application>
 
 </manifest>

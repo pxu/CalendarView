@@ -34,7 +34,7 @@
 
                 android:textSize="36sp"
                 android:gravity="center_vertical"
-                android:textColor="@android:color/holo_red_light"
+
                 />
 
         </LinearLayout>

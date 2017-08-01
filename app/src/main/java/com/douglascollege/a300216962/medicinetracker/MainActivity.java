@@ -5,8 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.*;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -15,56 +16,62 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.douglascollege.a300216962.medicinetracker.database.MedicineTracker;
+import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerDao;
+import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerItem;
+import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerItemDao;
 import com.henry.calendarview.SimpleMonthAdapter;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 public class MainActivity extends Activity{
 
 
     public static Context context;
+    // the business manager to handle all the backend related stuff(i.e. with database)
+    // since trying to maintain singleton mode to access database, this object will be
+    //shared by the whole application
+    public static MedicineTrackerManager medicineTrackerManager;
 
+    MainActivityAdapter mainActivityAdapter;
+    RecyclerView medicineTrackerView;
+    List <MedicineTracker> data = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
+        medicineTrackerManager = new MedicineTrackerManager();
 
         Button buttonAdd = (Button)findViewById(R.id.buttonAdd);
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, AddMedicineTrackerActivity.class);
-
                 startActivityForResult(intent,1);
             }
         });
 
-
-        final List<MainActivityAdapterItem> data = new ArrayList<>();
-
-        data.add(new MainActivityAdapterItem("Aspinlin","1", "2017-07-18"));
-        data.add(new MainActivityAdapterItem("Aspinlin2","3", "2017-07-18"));
-        data.add(new MainActivityAdapterItem("Aspinlin3","3", "2017-07-18"));
-        data.add(new MainActivityAdapterItem("Aspinlin","1", "2017-07-18"));
-        data.add(new MainActivityAdapterItem("Aspinlin2","3", "2017-07-18"));
-        data.add(new MainActivityAdapterItem("Aspinlin3","3", "2017-07-18"));
-        data.add(new MainActivityAdapterItem("Aspinlin","1", "2017-07-18"));
-        data.add(new MainActivityAdapterItem("Aspinlin2","3", "2017-07-18"));
-        data.add(new MainActivityAdapterItem("Aspinlin3","3", "2017-07-18"));
-
-        data.add(new MainActivityAdapterItem("Aspinlin","1", "2017-07-18"));
-        data.add(new MainActivityAdapterItem("Aspinlin2","3", "2017-07-18"));
-        data.add(new MainActivityAdapterItem("Aspinlin3","3", "2017-07-18"));
+        Button buttonReport = (Button)findViewById(R.id.buttonReport);
+        buttonReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ReportActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.listviewMedicineTakingItem);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final MainActivityAdapter mainActivityAdapter = new MainActivityAdapter(context, data);
-        recyclerView.setAdapter(mainActivityAdapter);
+        medicineTrackerView = (RecyclerView) findViewById(R.id.recyclerViewMedicineTrack);
+        medicineTrackerView.setLayoutManager(new LinearLayoutManager(this));
+        medicineTrackerView.setMinimumHeight(40);
+        mainActivityAdapter = new MainActivityAdapter(context, data);
+        medicineTrackerView.setAdapter(mainActivityAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
@@ -75,47 +82,28 @@ public class MainActivity extends Activity{
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 // Remove item from backing list here
-                data.remove(viewHolder.getAdapterPosition());
-                mainActivityAdapter.notifyDataSetChanged();
-                //mainActivityAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+
+                MedicineTracker mt = data.get(viewHolder.getAdapterPosition());
+                if(medicineTrackerManager.deleteMedicineTracker(mt.getId())){
+                    data.remove(viewHolder.getAdapterPosition());
+                    mainActivityAdapter.notifyDataSetChanged();
+                }
+
             }
         });
 
-        itemTouchHelper.attachToRecyclerView(recyclerView);
-
-
-
-
-
+        itemTouchHelper.attachToRecyclerView(medicineTrackerView);
 
     }
-
-
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+        data.clear();
+        data.addAll(medicineTrackerManager.getAllMedicineTrackers());
 
-        if(requestCode == 1) {
-            Bundle b = data.getExtras();
-            List<SimpleMonthAdapter.CalendarDay> selectedDays = (List<SimpleMonthAdapter.CalendarDay>) b.get("selected_dates");
-            String medicineTakingDateRange = "";
-            if(selectedDays!=null && selectedDays.size()>0){
-                medicineTakingDateRange = CommonUtils.getDateInString(selectedDays.get(0).getDate());
-                medicineTakingDateRange += " - " +  CommonUtils.getDateInString(selectedDays.get(selectedDays.size()-1).getDate());
-
-            }
-
-            for (SimpleMonthAdapter.CalendarDay day : selectedDays) {
-                System.out.println(" pengfei: " + day.toString());
-
-            }
-
-            //editTextMedicineDates.setText(medicineTakingDateRange);
-
-        }
-
-
+        mainActivityAdapter.notifyDataSetChanged();
 
     }
+
 }

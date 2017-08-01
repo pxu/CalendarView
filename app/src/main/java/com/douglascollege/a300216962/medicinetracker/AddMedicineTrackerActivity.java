@@ -1,26 +1,38 @@
 package com.douglascollege.a300216962.medicinetracker;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.douglascollege.a300216962.medicinetracker.database.MedicineTracker;
+import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerDao;
+import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerItem;
+import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerItemDao;
 import com.henry.calendarview.SimpleMonthAdapter;
 
 import java.util.List;
 
-import static com.douglascollege.a300216962.medicinetracker.MainActivity.context;
+import static com.douglascollege.a300216962.medicinetracker.MainActivity.medicineTrackerManager;
 
-public class AddMedicineTrackerActivity extends AppCompatActivity {
+public class AddMedicineTrackerActivity extends Activity {
     EditText editTextMedicineDates;
+
+    List<SimpleMonthAdapter.CalendarDay> selectedDays;
+
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medicine_tracker);
+        context = this;
 
         editTextMedicineDates = (EditText)findViewById(R.id.editTextMedicineDates);
         Button button = (Button) findViewById(R.id.buttonAddMedicine);
@@ -66,13 +78,59 @@ public class AddMedicineTrackerActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*data.add(new MainActivityAdapterItem(
-                        editTextMedicineName.getText().toString(),
-                        editTextMedicineQuantity.getText().toString(),
-                        editTextMedicineDates.getText().toString())
-                );
-                listview.invalidateViews();*/
-                hideSoftKeyBoard();
+
+                if(editTextMedicineName.getText().toString().isEmpty()){
+                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(context);
+                    dlgAlert.setMessage("Please type the medicine name");
+                    dlgAlert.setTitle("warning");
+                    dlgAlert.setPositiveButton("OK", null);
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                    return;
+                } else if(editTextMedicineQuantity.getText().toString().isEmpty()){
+                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(context);
+                    dlgAlert.setMessage("Please type the daily dosage");
+                    dlgAlert.setTitle("warning");
+                    dlgAlert.setPositiveButton("OK", null);
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                    return;
+                }else if(selectedDays == null || selectedDays.size()<=0){
+                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(context);
+                    dlgAlert.setMessage("Please select dates");
+                    dlgAlert.setTitle("warning");
+                    dlgAlert.setPositiveButton("OK", null);
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                    return;
+                }
+
+                MedicineTracker mt = new MedicineTracker();
+                mt.setDailyDosage(Double.parseDouble(editTextMedicineQuantity.getText().toString()));
+                mt.setName(editTextMedicineName.getText().toString());
+
+                mt.setStartDate(selectedDays.get(0).getDate());
+                mt.setEndDate(selectedDays.get(selectedDays.size()-1).getDate());
+
+                if(medicineTrackerManager.hasMedicineAlreadyTracked(mt)){
+                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(context);
+                    dlgAlert.setMessage("You've already have overlapped track on this medicine in the app");
+                    dlgAlert.setTitle("Warning");
+                    dlgAlert.setPositiveButton("OK", null);
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                }else {
+                    medicineTrackerManager.createMedicineTracker(mt);
+
+                    for (SimpleMonthAdapter.CalendarDay day : selectedDays) {
+                        MedicineTrackerItem mti = new MedicineTrackerItem();
+                        mti.setDate(day.getDate());
+                        mti.setMedicineTracker(mt);
+                        medicineTrackerManager.createMedicineTrackerItem(mti);
+                    }
+
+                    finish();
+                }
 
             }
         });
@@ -84,7 +142,7 @@ public class AddMedicineTrackerActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
             Bundle b = data.getExtras();
-            List<SimpleMonthAdapter.CalendarDay> selectedDays = (List<SimpleMonthAdapter.CalendarDay>) b.get("selected_dates");
+            selectedDays = (List<SimpleMonthAdapter.CalendarDay>) b.get("selected_dates");
             String medicineTakingDateRange = "";
             if (selectedDays != null && selectedDays.size() > 0) {
                 medicineTakingDateRange = CommonUtils.getDateInString(selectedDays.get(0).getDate());
@@ -92,10 +150,6 @@ public class AddMedicineTrackerActivity extends AppCompatActivity {
 
             }
 
-            for (SimpleMonthAdapter.CalendarDay day : selectedDays) {
-                System.out.println(" pengfei: " + day.toString());
-
-            }
 
             editTextMedicineDates.setText(medicineTakingDateRange);
 
