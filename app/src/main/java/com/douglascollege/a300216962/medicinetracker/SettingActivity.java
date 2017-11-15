@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerCloudItem;
@@ -39,6 +40,8 @@ public class SettingActivity extends Activity {
         final EditText editTextPhone = (EditText)findViewById(R.id.editTextPhone);
         editTextPhone.setText(MainActivity.sharedPreferences.getString("phoneNumber",""));
 
+        final CheckBox checkBoxNotification = (CheckBox)findViewById(R.id.checkBoxNotification);
+        checkBoxNotification.setChecked(MainActivity.sharedPreferences.getBoolean("notification",false));
         Button buttonSave = (Button)findViewById(R.id.buttonSave);
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,8 +50,12 @@ public class SettingActivity extends Activity {
                 SharedPreferences.Editor editor = MainActivity.sharedPreferences.edit();
                 editor.putString("patientName", editTextName.getText().toString());
                 editor.putString("phoneNumber", editTextPhone.getText().toString());
+                editor.putBoolean("notification", checkBoxNotification.isChecked());
 
                 editor.commit();
+
+                Intent intent = new Intent(settingActivity, MainActivity.class);
+                startActivity(intent);
             }
         });
     }

@@ -158,7 +158,7 @@ public class MainActivity extends Activity{
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                if(MainActivity.sharedPreferences.getBoolean("notification",false) == false) return;
                 Map<String,Map<String,MedicineTrackerCloudItem>> data = (Map<String,Map<String,MedicineTrackerCloudItem>>)dataSnapshot.getValue();
                 if(data == null || data.size()==0) return;
 
@@ -225,6 +225,8 @@ public class MainActivity extends Activity{
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(MainActivity.sharedPreferences.getBoolean("notification",false) == false) return;
 
                 Map<String,Map<String,MedicineTrackerCloudItem>> data = (Map<String,Map<String,MedicineTrackerCloudItem>>)dataSnapshot.getValue();
                 if(data == null || data.size()==0) return;
