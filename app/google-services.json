@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "119074249352",
+    "firebase_url": "https://medicinetrack-6c0f0.firebaseio.com",
+    "project_id": "medicinetrack-6c0f0",
+    "storage_bucket": "medicinetrack-6c0f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119074249352:android:70e24b2e2fbb7363",
+        "android_client_info": {
+          "package_name": "com.douglascollege.a300216962.medicinetracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119074249352-h0pqr79m7hmkg4m2dmts6r825vm2apms.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.douglascollege.a300216962.medicinetracker",
+            "certificate_hash": "97935ac7213a1da816c089d6263d89d2264fb567"
+          }
+        },
+        {
+          "client_id": "119074249352-ofp8nmvflj072o6dhokh0pc3md8d7hvk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB94cey8EOaLarjx62d2N6xO725_2E4VrQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119074249352-ofp8nmvflj072o6dhokh0pc3md8d7hvk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

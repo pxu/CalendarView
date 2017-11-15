@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.douglascollege.a300216962.medicinetracker">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,6 +15,7 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -18,7 +23,8 @@
         <activity android:name=".DatePickerActivity" />
         <activity android:name=".MedicineTrackerActivity" />
         <activity android:name=".AddMedicineTrackerActivity" />
-        <activity android:name=".ReportActivity"></activity>
+        <activity android:name=".ReportActivity" />
+        <activity android:name=".SettingActivity"></activity>
     </application>
 
 </manifest>

@@ -122,11 +122,13 @@ public class AddMedicineTrackerActivity extends Activity {
                 }else {
                     medicineTrackerManager.createMedicineTracker(mt);
 
+
                     for (SimpleMonthAdapter.CalendarDay day : selectedDays) {
                         MedicineTrackerItem mti = new MedicineTrackerItem();
                         mti.setDate(day.getDate());
                         mti.setMedicineTracker(mt);
                         medicineTrackerManager.createMedicineTrackerItem(mti);
+                        medicineTrackerManager.createMedicineTrackerItemInCloud(mti, mt);
                     }
 
                     finish();

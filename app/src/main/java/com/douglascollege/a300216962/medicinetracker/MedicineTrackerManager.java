@@ -1,8 +1,13 @@
 package com.douglascollege.a300216962.medicinetracker;
 
+import android.content.ContentResolver;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.provider.ContactsContract;
 
 import com.douglascollege.a300216962.medicinetracker.database.MedicineTracker;
+import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerCloudItem;
 import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerDao;
 import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerItem;
 import com.douglascollege.a300216962.medicinetracker.database.MedicineTrackerItemDao;
@@ -12,7 +17,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.douglascollege.a300216962.medicinetracker.MainActivity.context;
+import static com.douglascollege.a300216962.medicinetracker.MainActivity.sharedPreferences;
 
 /**
  * Created by pengfei.xu on 7/31/2017.
@@ -35,6 +42,26 @@ public class MedicineTrackerManager {
     public void createMedicineTrackerItem(MedicineTrackerItem medicineTrackerItem){
         medicineTrackerItemDao.add(medicineTrackerItem);
     }
+
+    public void createMedicineTrackerItemInCloud(MedicineTrackerItem medicineTrackerItem, MedicineTracker medicineTracker){
+        MedicineTrackerCloudItem item = MedicineTrackerCloudItem.fromPersistentObjects(medicineTrackerItem,medicineTracker);
+
+        MainActivity.mCloudDatabase.getReference("records").child(item.getPatientName()).child(item.getDateInStr()).setValue(item);
+    }
+
+    public void remindMedicineTrackerItemInCloud(MedicineTrackerCloudItem item){
+        item.setFrom(sharedPreferences.getString("patientName",""));
+        MainActivity.mCloudDatabase.getReference("reminder").child(item.getPatientName()).child(item.getDateInStr()).setValue(item);
+    }
+
+    public void removeMedicineTrackerItemReminderInCloud(MedicineTrackerCloudItem item){
+        MainActivity.mCloudDatabase.getReference("reminder").child(item.getPatientName()).child(item.getDateInStr()).removeValue();
+    }
+
+    public void removeMedicineTrackerItemInCloud(MedicineTrackerCloudItem item){
+        MainActivity.mCloudDatabase.getReference("records").child(item.getPatientName()).child(item.getDateInStr()).removeValue();
+    }
+
 
     public MedicineTracker getMedicineTrackerById(int id){
         return medicineTrackerDao.get(id);
@@ -100,6 +127,10 @@ public class MedicineTrackerManager {
     public boolean updateMedicineTrackerItem(MedicineTrackerItem medicineTrackerItem){
         int result = medicineTrackerItemDao.update(medicineTrackerItem);
         return result>0?true:false;
+    }
+
+    public static String getPhoneOwner(){
+        return sharedPreferences.getString("patientName","");
     }
 
 }
